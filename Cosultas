@@ -1,0 +1,11 @@
+
+//// 1) Mostrar el salario mínimo, máximo y promedio por cada departamento.
+
+SELECT d.Nombre AS Departamentos, 
+       MIN(e.Salario) AS salario_minimo, 
+       MAX(e.Salario) AS salario_maximo, 
+       AVG(e.Salario) AS salario_promedio
+FROM Departamentos d
+JOIN Empleados e ON d.Id = e.DepartamentoId
+GROUP BY d.Nombre;
+
