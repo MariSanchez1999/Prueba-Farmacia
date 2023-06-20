@@ -19,3 +19,46 @@ JOIN Empleados e ON d.Id = e.DepartamentoId
 GROUP BY d.Nombre
 HAVING COUNT(*) >= 3;
 
+
+/// Mostrar los colaboradores que tienen al menos 1 año de haber ingresado, indicando en una columna los meses que tienen de haber ingresado.
+
+SELECT Nombre, 
+    (YEAR(GETDATE()) - YEAR(FechaIngreso)) * 12 + (MONTH(GETDATE()) - MONTH(FechaIngreso)) AS meses_trabajados
+FROM Empleados
+WHERE (YEAR(GETDATE()) - YEAR(FechaIngreso)) * 12 + (MONTH(GETDATE()) - MONTH(FechaIngreso)) >= 12
+
+ORDER BY FechaIngreso desc;
+
+
+//// Mostrar una lista de los empleados, ordenándolos primero por los que pertenecen al departamento de Mercadeo, y luego por ordenados por el nombre del departamento y nombre del empleado.
+
+
+SELECT e.Nombre AS empleado, d.Nombre AS departamento,CASE WHEN d.Nombre = 'Mercadeo' THEN 1 ELSE 2 END AS orden
+FROM Empleados e
+JOIN Departamentos d ON e.DepartamentoId = d.Id
+ORDER BY  orden,d.Nombre, e.Nombre;
+
+
+//// Listar los 2 empleados con mayor salario de cada departamento.
+
+SELECT  e.Nombre AS empleado, e.Salario AS salario, d.Nombre AS departamento
+FROM Departamentos d
+JOIN Empleados e ON d.Id = e.DepartamentoId
+WHERE e.Salario IN (
+  SELECT TOP 2 Salario
+  FROM Empleados e2
+  WHERE e2.DepartamentoId = e.DepartamentoId
+  ORDER BY e2.Salario DESC
+)
+ORDER BY d.Nombre, e.Salario DESC;
+
+
+/// Listar los empleados de cada departamento, agregando una columna que muestre el número de línea agrupado por cada departamento.
+
+SELECT (SELECT COUNT(*) FROM Empleados e2 WHERE e2.DepartamentoId = d.Id AND e2.Id <= e.Id) AS numero_linea,e.Nombre AS empleado, d.Nombre AS departamento
+       FROM Departamentos d
+       JOIN Empleados e ON d.Id = e.DepartamentoId
+       ORDER BY d.Nombre, numero_linea;
+
+
+
