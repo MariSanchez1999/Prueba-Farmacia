@@ -9,3 +9,13 @@ FROM Departamentos d
 JOIN Empleados e ON d.Id = e.DepartamentoId
 GROUP BY d.Nombre;
 
+
+//// Listar los departamentos que tienen 3 o más empleados
+
+
+SELECT d.Nombre AS Departamento, COUNT(*) AS No_empleados
+FROM Departamentos d
+JOIN Empleados e ON d.Id = e.DepartamentoId
+GROUP BY d.Nombre
+HAVING COUNT(*) >= 3;
+
